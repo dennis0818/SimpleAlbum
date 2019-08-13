@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org/DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.dennis.simplealbum.mapper.mainMapper">
+	
+	<resultMap type="com.dennis.simplealbum.po.entryVo" id="map">
+		<id column="num_entry" property="num_entry" />
+		<result column="username" property="username"/>
+		<result column="message" property="message"/>
+		<result column="time" property="time"/>
+		<collection property="images" ofType="com.dennis.simplealbum.po.image">
+			<id column="img_id" property="img_id"/>
+			<result column="img_path" property="img_path"/>
+		</collection>
+	</resultMap>
+	
+	<insert id="insertEntry" parameterType="com.dennis.simplealbum.po.main">
+		insert into main
+		(username,num_entry,message,time) values
+		(#{username},#{num_entry},#{message},#{time})
+	</insert>
+
+	<select id="showEntries" parameterType="com.dennis.simplealbum.po.limitParam" resultMap="map">
+		select
+			m.num_entry,
+			m.username,
+			m.message,
+			m.time,
+			image.img_path
+		from
+			(select * from main limit #{limitStart},#{limitOffset}) m
+		join
+			image
+		on
+			(m.num_entry = image.num_entry)
+		
+	</select>
+	
+	<select id="getCount" resultType="java.lang.Integer">
+		select count(*) from main;
+	</select>
+
+
+
+
+
+</mapper>
